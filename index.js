@@ -8,6 +8,7 @@ const mainAdminRoutes = require("./routes/mainAdmin");
 const guestRoutes = require("./routes/guest");
 const guestAdminRoutes = require("./routes/guestAdmin");
 const path = require("path");
+const staticRoutes = require("./routes/staticRoutes");
 // CONNECT DB
 mongoose
   .connect(process.env.DB_URL)
@@ -30,6 +31,7 @@ app.use("/api/auth", authRoute);
 app.use("/main-admin", mainAdminRoutes);
 app.use("/guest", guestRoutes);
 app.use("/guest-admin", guestAdminRoutes);
+app.use("/", staticRoutes);
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port ${process.env.PORT}`);
 });
