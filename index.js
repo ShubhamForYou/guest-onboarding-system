@@ -7,6 +7,7 @@ const authRoute = require("./routes/auth");
 const mainAdminRoutes = require("./routes/mainAdmin");
 const guestRoutes = require("./routes/guest");
 const guestAdminRoutes = require("./routes/guestAdmin");
+const path = require("path");
 // CONNECT DB
 mongoose
   .connect(process.env.DB_URL)
@@ -16,6 +17,9 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
+// set the view engine to ejs
+app.set("view engine", "ejs");
+app.set("views", path.resolve("./views"));
 // middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
