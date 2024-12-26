@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include("./partials/head.ejs") %>
+    <!-- Link to Bootstrap 4 CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    
+    <!-- Container to center the content -->
+    <div class="d-flex justify-content-center align-items-center vh-100">
+      <!-- Hotel Card -->
+      <div
+        class="card shadow-sm p-4 rounded-3"
+        style="max-width: 500px; width: 100%"
+      >
+        <!-- Hotel Name -->
+        <div class="card-title text-center h2 font-weight-bold text-dark">
+          <%= hotel.name %>
+        </div>
+
+        <!-- Hotel Address -->
+        <div class="card-body text-center">
+          <p class="text-muted" style="font-size: 1.2rem">
+            <%= hotel.address %>
+          </p>
+
+          <!-- Action Buttons -->
+          <div class="d-flex justify-content-between">
+            <!-- Edit Button -->
+            <a
+              href="/main-admin/hotel/<%= hotel._id %>/edit"
+              class="btn btn-warning btn-sm text-white"
+            >
+              Edit Hotel
+            </a>
+
+            <!-- Generate QR Code Button -->
+            <a
+              href="/main-admin/hotel/<%= hotel._id %>/qrcode"
+              class="btn btn-success btn-sm text-white"
+            >
+              Generate QR
+            </a>
+
+            <!-- Delete Button (using form for POST or DELETE method) -->
+            <form
+              action="/main-admin/hotel/<%= hotel._id %>/delete"
+              method="DELETE"
+              onsubmit="return confirm('Are you sure you want to delete this hotel?');"
+            >
+              <button type="submit" class="btn btn-danger btn-sm text-white">
+                Delete Hotel
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Back Button -->
+        <div class="text-center mt-3">
+          <a href="/main-admin" class="btn btn-secondary btn-block">
+            Back to Hotels
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <%- include("./partials/script.ejs") %>
+  </body>
+</html>

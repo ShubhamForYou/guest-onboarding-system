@@ -18,8 +18,12 @@ const addHotel = async (req, res) => {
     const qrCode = await QrCode.toDataURL(url);
     saveHotel.qrCode = qrCode;
     await saveHotel.save();
+    const hotels = await hotelModel.find({});
+    if (!hotels) {
+      return res.status(400).json("no hotel present in db");
+    }
 
-    return res.status(201).json(saveHotel);
+    return res.status(201).render("mainAdminDashboard", { hotels });
   } catch (error) {
     return res.status(500).json(error);
   }
@@ -35,7 +39,24 @@ const showHotels = async (req, res) => {
     if (!hotels) {
       return res.status(400).json("no hotel present in db");
     }
-    return res.status(200).json(hotels);
+    return res.status(201).render("mainAdminDashboard", { hotels });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
+//@desc  show hotel detail
+// @route GET /main-admin/hotel/:hotelId/show
+// @access public
+const showHotel = async (req, res) => {
+  const hotelId = req.params.hotelId;
+  const hotel = await hotelModel.findById(hotelId);
+  try {
+    if (!hotel) {
+      return res.status(404).json("hotel not found");
+    }
+    return res.status(200).render("viewHotel", {
+      hotel,
+    });
   } catch (error) {
     return res.status(500).json(error);
   }
@@ -51,7 +72,9 @@ const editHotel = async (req, res) => {
     if (!hotel) {
       return res.status(404).json("hotel not found");
     }
-    return res.status(200).json(hotel);
+    return res.status(200).render("editHotel", {
+      hotel,
+    });
   } catch (error) {
     return res.status(500).json(error);
   }
@@ -69,7 +92,11 @@ const updateHotel = async (req, res) => {
     hotel = await hotelModel.findByIdAndUpdate(hotelId, req.body, {
       new: true,
     });
-    return res.status(200).json(hotel);
+    const hotels = await hotelModel.find({});
+    return res.status(200).render("mainAdminDashboard", {
+      msg: `${hotel.name} updated successfully`,
+      hotels,
+    });
   } catch (error) {
     return res.status(500).json(error);
   }
@@ -109,11 +136,33 @@ const generateQrCode = async (req, res) => {
     return res.status(500).json(error);
   }
 };
+//@desc  delete hotel detail
+// @route DELETE /main-admin/hotel/:hotelId/delete
+// @access public
+const deleteHotel = async (req, res) => {
+  const hotelId = req.params.hotelId;
+  const hotel = await hotelModel.findById(hotelId);
+  try {
+    if (!hotel) {
+      return res.status(404).json("hotel not found");
+    }
+    await hotelModel.findByIdAndDelete(hotelId);
+    const hotels = await hotelModel.find({});
+    return res.status(200).render("mainAdminDashboard", {
+      msg: `${hotel.name} deleted successfully`,
+      hotels,
+    });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
 
 module.exports = {
   addHotel,
   showHotels,
+  showHotel,
   editHotel,
   updateHotel,
   generateQrCode,
+  deleteHotel,
 };
