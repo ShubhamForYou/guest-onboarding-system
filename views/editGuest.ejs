@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include("./partials/head.ejs") %>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container my-5">
+      <h1 class="text-center text-dark fw-bold mb-4">Edit Guest Details</h1>
+
+      <!-- Edit Guest Form -->
+      <form
+        action="/guest-admin/<%= guest._id %>/guest/update"
+        method="POST"
+        class="mb-4"
+      >
+        <input type="hidden" name="_method" value="PUT" />
+
+        <div class="mb-3">
+          <label for="guestName" class="form-label fw-semibold">Guest Name</label>
+          <input
+            type="text"
+            class="form-control border-dark shadow-sm rounded-3"
+            id="guestName"
+            name="name"
+            value="<%= guest.name %>"
+            placeholder="Enter guest name"
+            required
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="mobileNumber" class="form-label fw-semibold">Mobile Number</label>
+          <input
+            type="text"
+            class="form-control border-dark shadow-sm rounded-3"
+            id="mobileNumber"
+            name="mobileNumber"
+            value="<%= guest.mobileNumber %>"
+            placeholder="Enter mobile number"
+            required
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="address" class="form-label fw-semibold">Address</label>
+          <textarea
+            class="form-control border-dark shadow-sm rounded-3"
+            id="address"
+            name="address"
+            rows="3"
+            placeholder="Enter address"
+            required
+          ><%= guest.address %></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label for="purposeOfVisit" class="form-label fw-semibold">Purpose of Visit</label>
+          <select
+            class="form-control border-dark shadow-sm rounded-3"
+            id="purposeOfVisit"
+            name="purposeOfVisit"
+            required
+          >
+            <option value="Business" <%= guest.purposeOfVisit === 'Business' ? 'selected' : '' %>>Business</option>
+            <option value="Personal" <%= guest.purposeOfVisit === 'Personal' ? 'selected' : '' %>>Personal</option>
+            <option value="Tourist" <%= guest.purposeOfVisit === 'Tourist' ? 'selected' : '' %>>Tourist</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="stayFromDate" class="form-label fw-semibold">Stay From Date</label>
+          <input
+            type="date"
+            class="form-control border-dark shadow-sm rounded-3"
+            id="stayFromDate"
+            name="stayFromDate"
+            value="<%= guest.stayFromDate.toISOString().split('T')[0] %>"
+            required
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="stayToDate" class="form-label fw-semibold">Stay To Date</label>
+          <input
+            type="date"
+            class="form-control border-dark shadow-sm rounded-3"
+            id="stayToDate"
+            name="stayToDate"
+            value="<%= guest.stayToDate.toISOString().split('T')[0] %>"
+            required
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label fw-semibold">Email</label>
+          <input
+            type="email"
+            class="form-control border-dark shadow-sm rounded-3"
+            id="email"
+            name="email"
+            value="<%= guest.email %>"
+            placeholder="Enter email"
+            required
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="idProofNumber" class="form-label fw-semibold">ID Proof Number</label>
+          <input
+            type="text"
+            class="form-control border-dark shadow-sm rounded-3"
+            id="idProofNumber"
+            name="idProofNumber"
+            value="<%= guest.idProofNumber %>"
+            placeholder="Enter ID proof number"
+            required
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-success w-100 py-2 fw-bold shadow-sm"
+        >
+          Update Guest
+        </button>
+      </form>
+
+      <!-- Back to Guests List -->
+      <div class="text-center mt-3">
+        <a
+          href="/guest-admin/<%= guest.hotelId %>/guests"  
+          class="btn btn-secondary"
+        >
+          Back to Guests
+        </a>
+      </div>
+    </div>
+
+    <%- include("./partials/script.ejs") %>
+  </body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include("./partials/head.ejs") %>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .btn-pink {
+        background-color: #de5499;
+        border-radius: 10px;
+        font-weight: 800;
+        box-shadow: 3px 3px 0px 0px #e99f4c;
+      }
+      .btn-pink:hover {
+        opacity: 0.9;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container my-5">
+      <h1 class="text-center text-dark fw-bold mb-4">Guest Admin Dashboard</h1>
+
+      <!-- Display Hotels -->
+      <div>
+        <h2 class="fw-semibold text-dark mb-4">Hotels List</h2>
+        <div class="table-responsive">
+          <table class="table table-striped table-bordered">
+            <thead class="table-dark">
+              <tr>
+                <th>#</th>
+                <th>Hotel Name</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% hotels.forEach((hotel, index) => { %>
+              <tr>
+                <td><%= index + 1 %></td>
+                <td><%= hotel.name %></td>
+                <td>
+                  <a
+                    href="/guest-admin/<%= hotel._id %>/guests"
+                    class="btn btn-pink"
+                  >
+                    View Guests
+                  </a>
+                </td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <%- include("./partials/script.ejs") %>
+  </body>
+</html>

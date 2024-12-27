@@ -17,15 +17,18 @@ const addHotel = async (req, res) => {
     });
 
     const saveHotel = await newHotel.save();
-    // upload image to cloudinary and save url
-    // Upload file to Cloudinary
-    const logo = await cloudinary.uploader.upload(req.file.path);
 
-    // store logo url in DB
-    saveHotel.logo = logo.secure_url;
-    await saveHotel.save();
-    // Delete file from /public/images after uploading
-    await fs.unlinkSync(req.file.path);
+    if (req.file) {
+      // upload image to cloudinary and save url
+      // Upload file to Cloudinary
+      const logo = await cloudinary.uploader.upload(req.file.path);
+
+      // store logo url in DB
+      saveHotel.logo = logo.secure_url;
+      await saveHotel.save();
+      // Delete file from /public/images after uploading
+      await fs.unlinkSync(req.file.path);
+    }
 
     // generate qrcode and save url to db
     const url = `${req.protocol}://${req.get("host")}/guest/${saveHotel._id}`;
@@ -37,7 +40,10 @@ const addHotel = async (req, res) => {
       return res.status(400).json("no hotel present in db");
     }
 
-    return res.status(201).render("mainAdminDashboard", { hotels });
+    return res.status(201).render("mainAdminDashboard", {
+      hotels,
+      msg: `${saveHotel.name} add successfully`,
+    });
   } catch (error) {
     return res.status(500).json(error);
   }
@@ -103,19 +109,25 @@ const updateHotel = async (req, res) => {
     if (!hotel) {
       return res.status(404).json("hotel not found");
     }
-    // upload image to cloudinary and save url
-    // Upload file to Cloudinary
-    const logo = await cloudinary.uploader.upload(req.file.path);
 
-    // Add logo URL to req.body
-    req.body.logo = logo.secure_url;
+    // Check if a new logo is uploaded
+    if (req.file) {
+      // Upload the new logo to Cloudinary
+      const logo = await cloudinary.uploader.upload(req.file.path);
 
-    // Delete file from /public/images after uploading
-    await fs.unlinkSync(req.file.path);
+      // Delete the file from /public/images after uploading
+      await fs.unlinkSync(req.file.path);
 
+      // Update the logo URL in the request body
+      req.body.logo = logo.secure_url;
+    }
+
+    // Update the hotel with the new details (including the logo if uploaded)
     hotel = await hotelModel.findByIdAndUpdate(hotelId, req.body, {
       new: true,
     });
+
+    // Find all hotels and return the updated hotel list
     const hotels = await hotelModel.find({});
     return res.status(200).render("mainAdminDashboard", {
       msg: `${hotel.name} updated successfully`,

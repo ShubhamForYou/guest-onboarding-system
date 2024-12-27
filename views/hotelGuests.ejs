@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include("./partials/head.ejs") %>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container my-5">
+      <h1 class="text-center text-dark fw-bold mb-4">
+        Guests for <%= hotel.name %>
+      </h1>
+
+      <% if (locals.guests) { %>
+      <!-- Guests Table -->
+      <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+          <thead class="table-dark">
+            <tr>
+              <th>#</th>
+              <th>Guest Name</th>
+              <th>Stay From</th>
+              <th>Stay To</th>
+              <th>Phone Number</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% guests.forEach((guest, index) => { %>
+            <tr>
+              <td><%= index + 1 %></td>
+              <td><%= guest.name %></td>
+              <td><%= guest.stayFromDate || "N/A" %></td>
+              <td><%= guest.stayToDate || "N/A" %></td>
+              <td><%= guest.phoneNumber || "N/A" %></td>
+              <td>
+                <a
+                  href="/guest-admin/<%= guest._id %>/guest/view"
+                  class="btn btn-sm btn-info"
+                  >View Details</a
+                >
+                <a
+                  href="/guest-admin/<%= guest._id %>/guest/edit"
+                  class="btn btn-sm btn-warning"
+                  >Edit</a
+                >
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+      <% } else { %>
+      <!-- No Guests Found -->
+      <p class="text-center text-muted">
+        No guests registered for this hotel yet.
+      </p>
+      <% } %>
+    </div>
+
+    <%- include("./partials/script.ejs") %>
+  </body>
+</html>
