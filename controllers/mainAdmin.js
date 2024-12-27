@@ -1,5 +1,7 @@
 const hotelModel = require("../models/hotel");
 const QrCode = require("qrcode");
+const cloudinary = require("cloudinary");
+const fs = require("fs");
 //@desc add new hotel
 // @route POST /main-admin/add-hotel
 // @access public
@@ -13,7 +15,19 @@ const addHotel = async (req, res) => {
       name,
       address,
     });
+
     const saveHotel = await newHotel.save();
+    // upload image to cloudinary and save url
+    // Upload file to Cloudinary
+    const logo = await cloudinary.uploader.upload(req.file.path);
+    console.log("Cloudinary Upload Result:", logo);
+    // store logo url in DB
+    saveHotel.logo = logo.secure_url;
+    await saveHotel.save();
+    // Delete file from /public/images after uploading
+    await fs.unlinkSync(req.file.path);
+
+    // generate qrcode and save url to db
     const url = `${req.protocol}://${req.get("host")}/guest/${saveHotel._id}`;
     const qrCode = await QrCode.toDataURL(url);
     saveHotel.qrCode = qrCode;
@@ -89,6 +103,17 @@ const updateHotel = async (req, res) => {
     if (!hotel) {
       return res.status(404).json("hotel not found");
     }
+    // upload image to cloudinary and save url
+    // Upload file to Cloudinary
+    const logo = await cloudinary.uploader.upload(req.file.path);
+    console.log("Cloudinary Upload Result:", logo);
+
+    // Add logo URL to req.body
+    req.body.logo = logo.secure_url;
+
+    // Delete file from /public/images after uploading
+    await fs.unlinkSync(req.file.path);
+
     hotel = await hotelModel.findByIdAndUpdate(hotelId, req.body, {
       new: true,
     });

@@ -9,7 +9,6 @@
     />
   </head>
   <body>
-    
     <!-- Container to center the content -->
     <div class="d-flex justify-content-center align-items-center vh-100">
       <!-- Hotel Card -->
@@ -21,6 +20,22 @@
         <div class="card-title text-center h2 font-weight-bold text-dark">
           <%= hotel.name %>
         </div>
+
+        <!-- Hotel Logo (if available) -->
+        <% if (hotel.logo) { %>
+        <div class="text-center mb-3">
+          <img
+            src="<%= hotel.logo %>"
+            alt="Hotel Logo"
+            class="img-fluid rounded-3"
+            style="max-width: 100%; height: auto"
+          />
+        </div>
+        <% } else { %>
+        <div class="text-center mb-3">
+          <p class="text-muted">No logo available</p>
+        </div>
+        <% } %>
 
         <!-- Hotel Address -->
         <div class="card-body text-center">
@@ -61,7 +76,7 @@
 
         <!-- Back Button -->
         <div class="text-center mt-3">
-          <a href="/main-admin" class="btn btn-secondary btn-block">
+          <a href="/main-admin/hotels" class="btn btn-secondary btn-block">
             Back to Hotels
           </a>
         </div>

@@ -34,7 +34,12 @@
         <p class="text-center text-dark fw-bold fs-3 mb-4">Main Admin Panel</p>
 
         <!-- Add New Hotel Form -->
-        <form action="/main-admin/add-hotel" method="POST" class="mb-4">
+        <form
+          action="/main-admin/add-hotel"
+          method="POST"
+          enctype="multipart/form-data"
+          class="mb-4"
+        >
           <div class="mb-3">
             <label for="hotelName" class="form-label fw-semibold"
               >Hotel Name</label
@@ -61,6 +66,18 @@
               required
             />
           </div>
+          <div class="mb-3">
+            <label for="hotelLogo" class="form-label fw-semibold"
+              >Hotel Logo</label
+            >
+            <input
+              type="file"
+              class="form-control border-dark shadow-sm p-3 mb-2 rounded-3"
+              id="hotelLogo"
+              name="logo"
+              required
+            />
+          </div>
           <button
             type="submit"
             class="btn btn-pink w-100 py-3 mt-3 fw-bold shadow-sm"
@@ -69,7 +86,7 @@
           </button>
         </form>
 
-        <% if (hotels.length === 0) { %>
+        <% if (!locals.hotels.length) { %>
         <!-- No hotels message -->
         <div class="no-hotels-message">
           No hotels in the database. Please add a hotel to get started.

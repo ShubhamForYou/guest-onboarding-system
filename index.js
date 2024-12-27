@@ -3,6 +3,7 @@ const app = express();
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const env = require("dotenv").config();
+const cloudinary = require("cloudinary").v2;
 const authRoute = require("./routes/auth");
 const mainAdminRoutes = require("./routes/mainAdmin");
 const guestRoutes = require("./routes/guest");
@@ -19,6 +20,13 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
+
+// config cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 // set the view engine to ejs
 app.set("view engine", "ejs");
 app.set("views", path.resolve("./views"));
