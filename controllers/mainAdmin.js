@@ -19,15 +19,14 @@ const addHotel = async (req, res) => {
     const saveHotel = await newHotel.save();
 
     if (req.file) {
-      // upload image to cloudinary and save url
-      // Upload file to Cloudinary
-      const logo = await cloudinary.uploader.upload(req.file.path);
+      // The logo is uploaded to Cloudinary and we get the URL
+      const logo = req.file; // The logo file uploaded directly to Cloudinary via Multer
 
-      // store logo url in DB
-      saveHotel.logo = logo.secure_url;
+      // Store the Cloudinary URL in the database
+      saveHotel.logo = logo.secure_url; // `secure_url` contains the full URL of the uploaded image
+
+      // Save the updated hotel document with the logo URL
       await saveHotel.save();
-      // Delete file from /public/images after uploading
-      await fs.unlinkSync(req.file.path);
     }
 
     // generate qrcode and save url to db
@@ -112,14 +111,14 @@ const updateHotel = async (req, res) => {
 
     // Check if a new logo is uploaded
     if (req.file) {
-      // Upload the new logo to Cloudinary
-      const logo = await cloudinary.uploader.upload(req.file.path);
+      // The logo is uploaded to Cloudinary and we get the URL
+      const logo = req.file; // The logo file uploaded directly to Cloudinary via Multer
 
-      // Delete the file from /public/images after uploading
-      await fs.unlinkSync(req.file.path);
+      // Store the Cloudinary URL in the database
+      saveHotel.logo = logo.secure_url; // `secure_url` contains the full URL of the uploaded image
 
-      // Update the logo URL in the request body
-      req.body.logo = logo.secure_url;
+      // Save the updated hotel document with the logo URL
+      await saveHotel.save();
     }
 
     // Update the hotel with the new details (including the logo if uploaded)
@@ -151,8 +150,8 @@ const generateQrCode = async (req, res) => {
     }
 
     // Render the qrcode.ejs page and pass hotel data
-    return res.status(200).render('qrcode', {
-      hotel: hotel
+    return res.status(200).render("qrcode", {
+      hotel: hotel,
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });
