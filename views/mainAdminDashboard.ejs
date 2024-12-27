@@ -20,6 +20,7 @@
     </style>
   </head>
   <body>
+    <%- include("./partials/logout.ejs") %>
     <!-- Check if there is a success message to show -->
     <% if (locals.msg) { %>
     <div class="container">
@@ -75,7 +76,6 @@
               class="form-control border-dark shadow-sm p-3 mb-2 rounded-3"
               id="hotelLogo"
               name="logo"
-              
             />
           </div>
           <button

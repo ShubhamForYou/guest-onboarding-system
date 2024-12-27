@@ -83,4 +83,19 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { signin, login };
+// @desc User logout
+// @route GET /api/auth/logout
+// @access Public
+const logout = (req, res) => {
+  try {
+    // Clear the "auth" cookie
+    res.clearCookie("auth");
+
+    // Redirect to the login page
+    return res.status(200).redirect("/login");
+  } catch (error) {
+    console.log(error);
+    return res.status(500).render("login", { err: "Unable to log out" });
+  }
+};
+module.exports = { signin, login, logout };
