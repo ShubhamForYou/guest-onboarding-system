@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include("./partials/head.ejs") %>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .btn-pink {
+        background-color: #de5499;
+        border-radius: 10px;
+        font-weight: 800;
+        box-shadow: 3px 3px 0px 0px #e99f4c;
+      }
+      .btn-pink:hover {
+        opacity: 0.9;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container my-5">
+      <h1 class="text-center text-dark fw-bold mb-4">
+        QR Code for <%= hotel.name %>
+      </h1>
+
+      <div class="text-center">
+        <p class="lead">Here is the QR code for <%= hotel.name %>:</p>
+        <img src="<%= hotel.qrCode %>" alt="Hotel QR Code" class="img-fluid" />
+      </div>
+
+      <div class="text-center mt-4">
+        <button class="btn btn-pink" onclick="window.print()">
+          Print QR Code
+        </button>
+      </div>
+    </div>
+
+    <%- include("./partials/script.ejs") %>
+  </body>
+</html>

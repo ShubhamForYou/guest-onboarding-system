@@ -11,9 +11,7 @@ const viewGuests = async (req, res) => {
       return res.status(404).json("Hotel not found");
     }
     const guests = await guestModel.find({ hotelId: hotelId });
-    if (!guests.length) {
-      return res.status(404).json("No guests found");
-    }
+
     return res.status(200).render("hotelGuests", {
       guests,
       hotel,
@@ -72,7 +70,7 @@ const updateGuest = async (req, res) => {
     guest = await guestModel.findByIdAndUpdate(guestId, req.body, {
       new: true,
     });
-  
+
     const hotel = await hotelModel.findById(guest.hotelId);
     return res.status(200).render("viewGuest", {
       guest,

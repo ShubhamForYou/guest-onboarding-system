@@ -1,7 +1,7 @@
 const hotelModel = require("../models/hotel");
 const guestModel = require("../models/guest");
 // @desc Guest scans QR code for filling form (QR-CODE link URL route)
-// @route GET /gust/:hotelID
+// @route GET /guest/:hotelID
 // @access public
 const guestForm = async (req, res) => {
   const hotelId = req.params.hotelId;
@@ -11,13 +11,15 @@ const guestForm = async (req, res) => {
     if (!hotel) {
       return res.status(404).json("hotel not found");
     }
-    return res.status(200).json(hotel);
+    return res.status(200).render("guestOnboardingForm", {
+      hotel,
+    });
   } catch (error) {
     return res.status(500).json(error);
   }
 };
 // @desc Guest  form  submit
-// @route POST /gust/:hotelID
+// @route POST /guest/:hotelID
 // @access public
 const submitGuestForm = async (req, res) => {
   const hotelId = req.params.hotelId;
@@ -63,7 +65,10 @@ const submitGuestForm = async (req, res) => {
       idProofNumber,
     });
 
-    return res.status(200).json(guest);
+    return res.status(200).render("thankYou", {
+      name: guest.name, 
+    });
+    
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

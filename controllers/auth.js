@@ -62,7 +62,7 @@ const login = async (req, res) => {
       res.cookie.auth = token;
       // delete after apply role-middleware
       const hotels = await hotelModel.find({});
-      return res.status(200).render("guestAdminDashboard", { hotels });
+      return res.status(200).render("mainAdminDashboard", { hotels });
     } else {
       return res
         .status(401)

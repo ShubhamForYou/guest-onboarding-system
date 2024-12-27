@@ -6,6 +6,17 @@
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <style>
+      .btn-print {
+        background-color: #007bff;
+        color: white;
+        border-radius: 5px;
+        font-weight: 600;
+      }
+      .btn-print:hover {
+        opacity: 0.9;
+      }
+    </style>
   </head>
   <body>
     <div class="container my-5">
@@ -13,7 +24,14 @@
         Guests for <%= hotel.name %>
       </h1>
 
-      <% if (locals.guests) { %>
+      <!-- Print Button -->
+      <div class="text-center mb-4">
+        <button class="btn btn-print" onclick="window.print()">
+          Print Guest Details
+        </button>
+      </div>
+
+      <% if (locals.guests.length > 0) { %>
       <!-- Guests Table -->
       <div class="table-responsive">
         <table class="table table-striped table-bordered">

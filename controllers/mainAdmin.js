@@ -138,38 +138,24 @@ const updateHotel = async (req, res) => {
   }
 };
 
-//@desc hotel QrCode
+// @desc hotel QrCode
 // @route GET /main-admin/hotel/:hotelId/qrcode
 // @access public
 const generateQrCode = async (req, res) => {
   const hotelId = req.params.hotelId;
+
   try {
     const hotel = await hotelModel.findById(hotelId);
     if (!hotel) {
-      return res.status(404).json("hotel not found");
+      return res.status(404).json("Hotel not found");
     }
-    const qrCodeImage = hotel.qrCode;
-    const html = `
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hotel QR Code</title>
-  </head>
-  <body>
-    <div> 
-      <h1>Hotel QR Code</h1>
-      <p>Here is the QR code for the ${hotel.name}:</p>
-      <img src="${qrCodeImage}" alt="Hotel QR Code" />
-      <button onclick="window.print()">Print QR Code</button>
-    </div>
-  </body>
-  </html>
-`;
-    return res.status(200).send(html);
+
+    // Render the qrcode.ejs page and pass hotel data
+    return res.status(200).render('qrcode', {
+      hotel: hotel
+    });
   } catch (error) {
-    return res.status(500).json(error);
+    return res.status(500).json({ message: error.message });
   }
 };
 //@desc  delete hotel detail
