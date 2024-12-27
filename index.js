@@ -10,7 +10,9 @@ const guestRoutes = require("./routes/guest");
 const guestAdminRoutes = require("./routes/guestAdmin");
 const path = require("path");
 const authStaticRoutes = require("./routes/authStaticRoutes");
-const staticMainAdmin = require("./routes/staticMainAdmin");
+const roleBasedDashboard = require("./routes/roleBasedDashboards");
+const verifyToken = require("./middleware/auth");
+const verifyRole = require("./middleware/roleMiddleware");
 // CONNECT DB
 mongoose
   .connect(process.env.DB_URL)
@@ -37,11 +39,16 @@ app.use(cookieParser());
 
 // routes
 app.use("/api/auth", authRoute);
-app.use("/main-admin", mainAdminRoutes);
+app.use("/main-admin", verifyToken, verifyRole("main-admin"), mainAdminRoutes);
 app.use("/guest", guestRoutes);
-app.use("/guest-admin", guestAdminRoutes);
+app.use(
+  "/guest-admin",
+  verifyToken,
+  verifyRole("guest-admin"),
+  guestAdminRoutes
+);
 app.use("/user", authStaticRoutes);
-app.use("/main", staticMainAdmin);
+app.use("/", roleBasedDashboard);
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port ${process.env.PORT}`);
 });

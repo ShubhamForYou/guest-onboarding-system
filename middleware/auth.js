@@ -3,7 +3,7 @@ const verifyToken = async (req, res, next) => {
   const token = req.cookies.auth;
   if (token) {
     if (
-      await jwt.verify(token, process.env.TOKEN_SECRET, (err, decode) => {
+      await jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
         if (err) {
           return res.status(401).json("user is not authorized");
         }
@@ -13,7 +13,7 @@ const verifyToken = async (req, res, next) => {
     ) {
     }
   } else {
-    return res.status(404).json("login first");
+    return res.status(404).render("login", { err: "login first" });
   }
 };
 

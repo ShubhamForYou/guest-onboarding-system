@@ -44,6 +44,12 @@
   </head>
   <title>Responsive Login Form</title>
   <body>
+    <% if (locals.err) { %>
+    <div class="container text-center">
+      <div class="alert alert-danger" role="alert"><%= locals.err %></div>
+    </div>
+    <% } %>
+
     <div
       class="container d-flex justify-content-center align-items-center min-vh-100"
     >

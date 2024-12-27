@@ -40,13 +40,13 @@ const login = async (req, res) => {
   try {
     if (!email || !password) {
       return res.status(400).render("login", {
-        err: "all fields are mandatory",
+        err: "All fields are mandatory",
       });
     }
     const user = await userModel.findOne({ email });
     if (!user) {
-      return res.status(400).render("login", {
-        err: "user not found!",
+      return res.status(400).render("signin", {
+        err: "User not found!",
       });
     }
     if (await bcrypt.compare(password, user.password)) {
@@ -59,10 +59,19 @@ const login = async (req, res) => {
       const token = await jwt.sign(payload, process.env.TOKEN_SECRET, {
         expiresIn: "1d",
       });
-      res.cookie.auth = token;
-      // delete after apply role-middleware
-      const hotels = await hotelModel.find({});
-      return res.status(200).render("mainAdminDashboard", { hotels });
+      res.cookie("auth", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+      });
+
+      // Check role and render the appropriate dashboard
+      if (user.role === "main-admin") {
+        return res.status(200).redirect("/main-admin-dashboard");
+      } else if (user.role === "guest-admin") {
+        return res.status(200).redirect("/guest-admin-dashboard");
+      } else {
+        return res.status(200).render("login", { err: "Unauthorized role" });
+      }
     } else {
       return res
         .status(401)
@@ -70,6 +79,7 @@ const login = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
+    return res.status(500).render("login", { err: "Server error" });
   }
 };
 
