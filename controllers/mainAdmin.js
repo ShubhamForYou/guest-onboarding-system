@@ -20,7 +20,7 @@ const addHotel = async (req, res) => {
     // upload image to cloudinary and save url
     // Upload file to Cloudinary
     const logo = await cloudinary.uploader.upload(req.file.path);
-    console.log("Cloudinary Upload Result:", logo);
+
     // store logo url in DB
     saveHotel.logo = logo.secure_url;
     await saveHotel.save();
@@ -106,7 +106,6 @@ const updateHotel = async (req, res) => {
     // upload image to cloudinary and save url
     // Upload file to Cloudinary
     const logo = await cloudinary.uploader.upload(req.file.path);
-    console.log("Cloudinary Upload Result:", logo);
 
     // Add logo URL to req.body
     req.body.logo = logo.secure_url;
