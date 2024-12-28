@@ -92,7 +92,7 @@ const logout = (req, res) => {
     res.clearCookie("auth");
 
     // Redirect to the login page
-    return res.status(200).redirect("/login");
+    return res.status(200).redirect("/");
   } catch (error) {
     console.log(error);
     return res.status(500).render("login", { err: "Unable to log out" });
