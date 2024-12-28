@@ -1,7 +1,8 @@
 const hotelModel = require("../models/hotel");
 const QrCode = require("qrcode");
-const cloudinary = require("cloudinary");
-const fs = require("fs");
+const cloudinary = require("cloudinary").v2;
+const { v4: uuid } = require("uuid");
+
 //@desc add new hotel
 // @route POST /main-admin/add-hotel
 // @access public
@@ -15,23 +16,37 @@ const addHotel = async (req, res) => {
       name,
       address,
     });
-
     const saveHotel = await newHotel.save();
 
+    // manually upload logo to cloudinary
     if (req.file) {
-      // The logo is uploaded to Cloudinary and we get the URL
-      const logo = req.file; // The logo file uploaded directly to Cloudinary via Multer
-
-      // Store the Cloudinary URL in the database
-      saveHotel.logo = logo.secure_url; // `secure_url` contains the full URL of the uploaded image
-
-      // Save the updated hotel document with the logo URL
-      await saveHotel.save();
+      const result = await cloudinary.uploader.upload_stream(
+        {
+          // folder
+          public_id: uuid(),
+          resource_type: "image",
+        },
+        async (err, cloudinaryResult) => {
+          if (err) {
+            return res
+              .status(500)
+              .json({ error: "Cloudinary upload failed", details: error });
+          }
+          // save logo url in DB
+          saveHotel.logo = cloudinaryResult.secure_url;
+          await saveHotel.save();
+        }
+      );
+      // send the file data from memory to Cloudinary
+      result.end(req.file.buffer);
     }
 
     // generate qrcode and save url to db
+    // create render url
     const url = `${req.protocol}://${req.get("host")}/guest/${saveHotel._id}`;
+    // this will give 16byte string for QRcode
     const qrCode = await QrCode.toDataURL(url);
+    // save in DB
     saveHotel.qrCode = qrCode;
     await saveHotel.save();
     const hotels = await hotelModel.find({});
@@ -109,22 +124,31 @@ const updateHotel = async (req, res) => {
       return res.status(404).json("hotel not found");
     }
 
-    // Check if a new logo is uploaded
-    if (req.file) {
-      // The logo is uploaded to Cloudinary and we get the URL
-      const logo = req.file; // The logo file uploaded directly to Cloudinary via Multer
-
-      // Store the Cloudinary URL in the database
-      saveHotel.logo = logo.secure_url; // `secure_url` contains the full URL of the uploaded image
-
-      // Save the updated hotel document with the logo URL
-      await saveHotel.save();
-    }
-
     // Update the hotel with the new details (including the logo if uploaded)
     hotel = await hotelModel.findByIdAndUpdate(hotelId, req.body, {
       new: true,
     });
+
+    //logo if present store to cloudinary and url to DB
+    if (req.file) {
+      const result = await cloudinary.uploader.upload_stream(
+        {
+          public_id: uuid(),
+          resource_type: "image",
+        },
+        async (err, cloudinaryResult) => {
+          if (err) {
+            return res
+              .status(500)
+              .json({ error: "Cloudinary upload failed", details: error });
+          }
+          // save to DB
+          hotel.logo = cloudinaryResult.secure_url;
+          await hotel.save();
+        }
+      );
+      result.end(req.file.buffer);
+    }
 
     // Find all hotels and return the updated hotel list
     const hotels = await hotelModel.find({});
