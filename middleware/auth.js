@@ -5,7 +5,9 @@ const verifyToken = async (req, res, next) => {
     if (
       await jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
         if (err) {
-          return res.status(401).json("user is not authorized");
+          return res
+            .status(401)
+            .render("login", { err: "user is not authorized" });
         }
         req.user = decoded;
         return next();

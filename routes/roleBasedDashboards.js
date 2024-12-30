@@ -5,26 +5,24 @@ const verifyToken = require("../middleware/auth");
 const verifyRole = require("../middleware/roleMiddleware");
 // @desc main- admin- dashboard
 // @route GET /main-admin-dashboard
-// @access public
+// @access private
 router.get(
   "/main-admin-dashboard",
   verifyToken,
   verifyRole("main-admin"),
   async (req, res) => {
-    // Fetch hotel data (assuming it's required for the dashboard)
     const hotels = await hotelModel.find({});
     return res.render("mainAdminDashboard", { hotels });
   }
 );
 // @desc main- admin- dashboard
 // @route GET /guest-admin-dashboard
-// @access public
+// @access private
 router.get(
   "/guest-admin-dashboard",
   verifyToken,
   verifyRole("guest-admin"),
   async (req, res) => {
-    // Fetch hotel data (assuming it's required for the dashboard)
     const hotels = await hotelModel.find({});
     return res.render("guestAdminDashboard", { hotels });
   }

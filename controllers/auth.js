@@ -29,7 +29,7 @@ const signin = async (req, res) => {
     });
     return res.status(201).render("login");
   } catch (error) {
-    return;
+    return res.status(500).json(error);
   }
 };
 // @desc user login
@@ -61,7 +61,6 @@ const login = async (req, res) => {
       });
       res.cookie("auth", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
       });
 
       // Check role and render the appropriate dashboard
